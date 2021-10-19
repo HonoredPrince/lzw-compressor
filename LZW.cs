@@ -22,9 +22,6 @@ namespace SourceCode
         private ulong _iBitBuffer; //Buffer de bits para armazenar temporariamente os bytes de entrada do arquivo
         private int _iBitCounter; //Contador do buffer para os bits 
 
-        [RegularExpression("^.*\\.(jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|mp4|txt)$")]
-        public string FilePath { get; set; }
-
         private void Initialize() //Limpar o buffer, já que o compressor pode ser uma instância e os métodos de compressão e descompressão serem chamados da mesma
         {
             _iBitBuffer = 0;
@@ -175,7 +172,7 @@ namespace SourceCode
                         baDecodeStack[iCounter] = (byte)_iaCharTable[iCurrentCode];
                         ++iCounter;
                         if (iCounter >= MAX_CODE)
-                            throw new Exception("oh crap");
+                            throw new Exception("Unexpected Error: Try Again!");
                         iCurrentCode = _iaPrefixTable[iCurrentCode];
                     }
 

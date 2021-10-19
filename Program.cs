@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Linq;
-using System.IO;
-using SourceCode;
 using System.Diagnostics;
-using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
 
 namespace SourceCode
 {
@@ -19,15 +14,24 @@ namespace SourceCode
                 Stopwatch stopwatch = new Stopwatch();
                 LZW compressor = new LZW();
 
-                compressor.FilePath = Console.ReadLine();
-                string filename = compressor.FilePath.Split('.')[0];
-                string format = compressor.FilePath.Split('.')[1];
+                //Seguir o padrão de formato de arquivo e de alguns formatos
+                Regex rgx = new Regex("^.*\\.(jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|mp4|txt)$");
+
+                string filePath = Console.ReadLine();
+
+                if (!rgx.IsMatch(filePath))
+                {
+                    throw new ArgumentException();
+                }
+
+                string filename = filePath.Split('.')[0];
+                string format = filePath.Split('.')[1];
 
                 string outputCompressedFilePath = "./CompressionOutput/OutputCompressed";
                 string outputDecompressedFilePath = "./DecompressionOutput/OutputDecompressed" + $".{format}";
 
                 stopwatch.Start();
-                compressor.Compress(compressor.FilePath, outputCompressedFilePath);
+                compressor.Compress(filePath, outputCompressedFilePath);
                 compressor.Decompress(outputCompressedFilePath, outputDecompressedFilePath);
                 stopwatch.Stop();
 
@@ -40,7 +44,7 @@ namespace SourceCode
             }
             catch (System.Exception e)
             {
-                System.Console.WriteLine($"Error on running the program: {e.Message}, please try again");
+                System.Console.WriteLine($"Error on running the program: {e.Message} Please try again");
                 return;
             }
         }
