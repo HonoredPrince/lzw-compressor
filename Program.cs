@@ -14,8 +14,8 @@ namespace SourceCode
                 Stopwatch stopwatch = new Stopwatch();
                 LZW compressor = new LZW();
 
-                //Seguir o padrão de formato de arquivo e de alguns formatos
-                Regex rgx = new Regex("^.*\\.(jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|mp4|txt)$");
+                //Seguir o padrão de estutura com os formato dos arquivos 
+                Regex rgx = new Regex("^.*\\.(PNG|png|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|mp4|txt)$");
 
                 string filePath = Console.ReadLine();
 
@@ -30,6 +30,7 @@ namespace SourceCode
                 string outputCompressedFilePath = "./CompressionOutput/OutputCompressed";
                 string outputDecompressedFilePath = "./DecompressionOutput/OutputDecompressed" + $".{format}";
 
+                //Considerar o stopwatch apenas sem ser em modo de debug e na parte que chama o compressor e descompressor
                 stopwatch.Start();
                 compressor.Compress(filePath, outputCompressedFilePath);
                 compressor.Decompress(outputCompressedFilePath, outputDecompressedFilePath);

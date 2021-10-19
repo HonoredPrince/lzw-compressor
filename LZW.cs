@@ -9,11 +9,11 @@ namespace SourceCode
 {
     public class LZW : ICompressorAlgorithm
     {
-        private const int MAX_BITS = 15; //Tamanho máximo de bits de leitura
+        private const int MAX_BITS = 14; //Tamanho máximo de bits de leitura
         private const int HASH_BIT = MAX_BITS - 8; //Bit de hash utilizado no algoritmo de busca de um match de index/prefixo nos arrays
         private const int MAX_VALUE = (1 << MAX_BITS) - 1; //Valor máximo baseado no número maximo de bits
         private const int MAX_CODE = MAX_VALUE - 1; //Código maior permitido
-        private const int TABLE_SIZE = 41053; //Valor deve ser maior que o 2 elevado ao número de bits
+        private const int TABLE_SIZE = 18041; //Valor deve ser maior que o 2 elevado ao número de bits
 
         private int[] _iaCodeTable = new int[TABLE_SIZE]; //Tabela de códigos 
         private int[] _iaPrefixTable = new int[TABLE_SIZE]; //Tabelas de Prefixos
@@ -92,43 +92,6 @@ namespace SourceCode
 
             System.Console.WriteLine($"CodeTableSize: {counterCodeTable}, PrefixTableSize: {counterPrefixTable}, CharTableSize: {counterCharTable}");
             return true;
-        }
-
-        //hasing function, acha o index de prefix+char, senão achar retorna -1
-        private int FindMatch(int pPrefix, int pChar)
-        {
-            int index = 0, offset = 0;
-
-            index = (pChar << HASH_BIT) ^ pPrefix;
-
-            offset = (index == 0) ? 1 : TABLE_SIZE - index;
-
-            while (true)
-            {
-                if (_iaCodeTable[index] == -1)
-                    return index;
-
-                if (_iaPrefixTable[index] == pPrefix && _iaCharTable[index] == pChar)
-                    return index;
-
-                index -= offset;
-                if (index < 0)
-                    index += TABLE_SIZE;
-            }
-        }
-
-        private void WriteCode(Stream pWriter, int pCode)
-        {
-            _iBitBuffer |= (ulong)pCode << (32 - MAX_BITS - _iBitCounter); //acha espaço e insere no buffer
-            _iBitCounter += MAX_BITS; //incrementa counter dos bits
-
-            while (_iBitCounter >= 8) //escreve todos os bits possíveis
-            {
-                int temp = (byte)((_iBitBuffer >> 24) & 255);
-                pWriter.WriteByte((byte)((_iBitBuffer >> 24) & 255)); //escreve byte do buffer
-                _iBitBuffer <<= 8; //remove byte escrito do buffer
-                _iBitCounter -= 8; //decrementa o contador
-            }
         }
 
         public bool Decompress(string pInputFileName, string pOutputFileName)
@@ -221,6 +184,45 @@ namespace SourceCode
             return true;
         }
 
+        //hasing function, acha o index de prefix+char, senão achar retorna -1
+        private int FindMatch(int pPrefix, int pChar)
+        {
+            int index = 0, offset = 0;
+
+            index = (pChar << HASH_BIT) ^ pPrefix;
+
+            offset = (index == 0) ? 1 : TABLE_SIZE - index;
+
+            while (true)
+            {
+                if (_iaCodeTable[index] == -1)
+                    return index;
+
+                if (_iaPrefixTable[index] == pPrefix && _iaCharTable[index] == pChar)
+                    return index;
+
+                index -= offset;
+                if (index < 0)
+                    index += TABLE_SIZE;
+            }
+        }
+
+        //function para escrever os códigos em bytes para o stream através do buffer
+        private void WriteCode(Stream pWriter, int pCode)
+        {
+            _iBitBuffer |= (ulong)pCode << (32 - MAX_BITS - _iBitCounter); //acha espaço e insere no buffer
+            _iBitCounter += MAX_BITS; //incrementa counter dos bits
+
+            while (_iBitCounter >= 8) //escreve todos os bits possíveis
+            {
+                int temp = (byte)((_iBitBuffer >> 24) & 255);
+                pWriter.WriteByte((byte)((_iBitBuffer >> 24) & 255)); //escreve byte do buffer
+                _iBitBuffer <<= 8; //remove byte escrito do buffer
+                _iBitCounter -= 8; //decrementa o contador
+            }
+        }
+
+        //function para ler os bytes do arquivo comprimido e retornar os índices
         private int ReadCode(Stream pReader)
         {
             uint iReturnVal;

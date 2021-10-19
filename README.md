@@ -1,2 +1,2 @@
 ### LZW COMPRESSOR
-- Made for a colleger discipline using C#
+- Made for a college discipline using C#
