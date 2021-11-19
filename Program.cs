@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
+using Implementation;
 
 namespace SourceCode
 {
@@ -8,16 +11,26 @@ namespace SourceCode
     {
         public static void Main(string[] args)
         {
-            System.Console.Write("Filepath: ");
+            //CompressSingleFile();
+
+            Classificator.LZWCompressionClassification();
+        }
+
+        public static void CompressSingleFile(string filePath = null)
+        {
+            if (filePath == null)
+                System.Console.Write("Filepath: ");
+
             try
             {
                 Stopwatch stopwatch = new Stopwatch();
                 LZW compressor = new LZW();
 
                 //Seguir o padrão de estutura com os formato dos arquivos 
-                Regex rgx = new Regex("^.*\\.(PNG|png|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|mp4|txt)$");
+                Regex rgx = new Regex("^.*\\.(PGM|pgm|PNG|png|jpg|JPG|gif|GIF|doc|DOC|pdf|PDF|mp4|txt)$");
 
-                string filePath = Console.ReadLine();
+                if (filePath == null)
+                    filePath = Console.ReadLine();
 
                 if (!rgx.IsMatch(filePath))
                 {
@@ -45,7 +58,7 @@ namespace SourceCode
             }
             catch (System.Exception e)
             {
-                System.Console.WriteLine($"Error on running the program: {e.Message} Please try again");
+                System.Console.WriteLine($"Error on running the program: {e.Message}, please try again");
                 return;
             }
         }

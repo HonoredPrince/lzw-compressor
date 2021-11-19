@@ -9,11 +9,11 @@ namespace SourceCode
 {
     public class LZW : ICompressorAlgorithm
     {
-        private const int MAX_BITS = 14; //Tamanho máximo de bits de leitura
+        private const int MAX_BITS = 10; //Tamanho máximo de bits de leitura
         private const int HASH_BIT = MAX_BITS - 8; //Bit de hash utilizado no algoritmo de busca de um match de index/prefixo nos arrays
         private const int MAX_VALUE = (1 << MAX_BITS) - 1; //Valor máximo baseado no número maximo de bits
         private const int MAX_CODE = MAX_VALUE - 1; //Código maior permitido
-        private const int TABLE_SIZE = 18041; //Valor deve ser maior que o 2 elevado ao número de bits
+        private const int TABLE_SIZE = 65537; //Valor deve ser maior que o 2 elevado ao número de bits
 
         private int[] _iaCodeTable = new int[TABLE_SIZE]; //Tabela de códigos 
         private int[] _iaPrefixTable = new int[TABLE_SIZE]; //Tabelas de Prefixos
@@ -27,6 +27,14 @@ namespace SourceCode
             _iBitBuffer = 0;
             _iBitCounter = 0;
         }
+
+        public int[] GetCodeTable() => _iaCodeTable.Where(x => x != -1).ToArray();
+        public int[] GetPrefixTable() => _iaPrefixTable.Where(x => x != 0).ToArray();
+        public int[] GetCharTable() => _iaCharTable.Where(x => x != 0).ToArray();
+
+        public int GetCodeTableSize() => _iaCodeTable.Where(x => x != -1).Count();
+        public int GetPrefixTableSize() => _iaPrefixTable.Where(x => x != 0).Count();
+        public int GetCharTableSize() => _iaCharTable.Where(x => x != 0).Count();
 
         public bool Compress(string pInputFileName, string pOutputFileName)
         {
@@ -86,11 +94,11 @@ namespace SourceCode
                     writer.Close();
             }
 
-            var counterCodeTable = _iaCodeTable.Where(x => x != -1).Count();
-            var counterPrefixTable = _iaPrefixTable.Where(x => x != 0).Count();
-            var counterCharTable = _iaCharTable.Where(x => x != 0).Count();
+            var counterCodeTable = GetCodeTableSize();
+            var counterPrefixTable = GetPrefixTableSize();
+            var counterCharTable = GetCharTableSize();
 
-            System.Console.WriteLine($"CodeTableSize: {counterCodeTable}, PrefixTableSize: {counterPrefixTable}, CharTableSize: {counterCharTable}");
+            //System.Console.WriteLine($"CodeTableSize: {counterCodeTable}, PrefixTableSize: {counterPrefixTable}, CharTableSize: {counterCharTable}");
             return true;
         }
 
@@ -176,9 +184,9 @@ namespace SourceCode
                     writer.Close();
             }
 
-            var counterCodeTable = _iaCodeTable.Where(x => x != -1).Count();
-            var counterPrefixTable = _iaPrefixTable.Where(x => x != 0).Count();
-            var counterCharTable = _iaCharTable.Where(x => x != 0).Count();
+            var counterCodeTable = GetCodeTableSize();
+            var counterPrefixTable = GetPrefixTableSize();
+            var counterCharTable = GetCharTableSize();
 
             System.Console.WriteLine($"CodeTableSize: {counterCodeTable}, PrefixTableSize: {counterPrefixTable}, CharTableSize: {counterCharTable}");
             return true;
