@@ -7,7 +7,7 @@ namespace SourceCode
 {
     public class LZWCompressor : ICompressorAlgorithm
     {
-        private const int MAX_BITS = 9; //Tamanho máximo de bits de leitura
+        private const int MAX_BITS = 16; //Tamanho máximo de bits de leitura
         private const int HASH_BIT = MAX_BITS - 8; //Bit de hash utilizado no algoritmo de busca de um match de index/prefixo nos arrays
         private const int MAX_VALUE = (1 << MAX_BITS) - 1; //Valor máximo baseado no número maximo de bits
         private const int MAX_CODE = MAX_VALUE - 1; //Código maior permitido

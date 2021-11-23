@@ -6,7 +6,7 @@ namespace SourceCode
 {
     public class LZWCompressorClassificator
     {
-        private const int MAX_BITS = 9; //Tamanho máximo de bits de leitura
+        private const int MAX_BITS = 16; //Tamanho máximo de bits de leitura
         private const int HASH_BIT = MAX_BITS - 8; //Bit de hash utilizado no algoritmo de busca de um match de index/prefixo nos arrays
         private const int MAX_VALUE = (1 << MAX_BITS) - 1; //Valor máximo baseado no número maximo de bits
         private const int MAX_CODE = MAX_VALUE - 1; //Código maior permitido
@@ -80,13 +80,14 @@ namespace SourceCode
                         iString = _iaCodeTable[iIndex];
                     else //insert new entry
                     {
-                        if (iNextCode <= MAX_CODE) //Senão, colocar essa entrada na tabela
-                        {
-                            _iaCodeTable[iIndex] = iNextCode++; //Insere e incrementa o próximo código que vai usar
-                            _iaPrefixTable[iIndex] = iString;
-                            _iaCharTable[iIndex] = (byte)iChar;
-                        }
+                        // if (iNextCode <= MAX_CODE) //Senão, colocar essa entrada na tabela
+                        // {
+                        //     _iaCodeTable[iIndex] = iNextCode++; //Insere e incrementa o próximo código que vai usar
+                        //     _iaPrefixTable[iIndex] = iString;
+                        //     _iaCharTable[iIndex] = (byte)iChar;
+                        // }
 
+                        iNextCode++;
                         WriteCode(writer, iString); //Escreve os índices achados e seus códigos para o arquivo
                         iString = iChar;
                     }
